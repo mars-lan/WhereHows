@@ -14,6 +14,7 @@ dependencies{
     play externalDependency.kafka
     play externalDependency.kafka_clients
 
+    playTest 'org.easytesting:fest-assert-core:2.0M10'
     playTest externalDependency.mockito
 }
 
