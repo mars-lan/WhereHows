@@ -3,11 +3,17 @@ on:
   push:
     branches:
       - master
+  release:
+    types: [published, edited]
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+      - run: echo "::set-env name=DOCKER_TAG::latest"
+        if: github.event_name == 'publish'
+      - run: echo "::set-env name=DOCKER_TAG::$(echo $GITHUB_REF | cut -d'/' -f 3)"
+        if: github.event_name == 'push'
       - uses: actions/checkout@v2
       - uses: docker/build-push-action@v1
         with:
@@ -15,4 +21,4 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
           repository: linkedin/datahub-gms
-          tags: latest
+          tags: ${{ env.DOCKER_TAG }}
