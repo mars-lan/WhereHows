@@ -12,6 +12,8 @@ jobs:
     if: ${{ github.repository == 'linkedin/datahub' }}
     steps:
       - uses: actions/checkout@v2
+      - uses: ypicard/get-branch-name-github-action@v1
+        id: tag
       - uses: docker/build-push-action@v1
         with:
           dockerfile: ./docker/gms/Dockerfile
@@ -19,3 +21,9 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }}
           repository: linkedin/datahub-gms
           tag_with_ref: true
+      - uses: VaultVulp/gp-docker-action@1.1.6
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          dockerfile: ./docker/gms/Dockerfile
+          image-name: datahub-gms
+          image-tag: ${{ steps.tag.outputs.tag }}
